@@ -1,0 +1,78 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="14"
+        android:translateY="24">
+
+        <!-- Bike Main Body Silhouette -->
+        <path
+            android:fillColor="#0D1117"
+            android:pathData="M15,45 C10,45 2,35 2,25 C2,10 15,5 40,5 C65,5 78,15 78,30 C78,45 70,55 55,55 L15,55 Z" />
+
+        <!-- Rear Glowing Wheel (Large) -->
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.5"
+            android:pathData="M58,35 m-18,0 a18,18 0,1,1 36,0 a18,18 0,1,1 -36,0" />
+        <path
+            android:strokeColor="#00E5FF"
+            android:strokeWidth="1.5"
+            android:pathData="M58,35 m-16,0 a16,16 0,1,1 32,0 a16,16 0,1,1 -32,0" />
+
+        <!-- Front Glowing Wheel (Smaller) -->
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.5"
+            android:pathData="M15,40 m-12,0 a12,12 0,1,1 24,0 a12,12 0,1,1 -24,0" />
+        <path
+            android:strokeColor="#00E5FF"
+            android:strokeWidth="1"
+            android:pathData="M15,40 m-10,0 a10,10 0,1,1 20,0 a10,10 0,1,1 -20,0" />
+
+        <!-- Rider Silhouette Integrated -->
+        <path
+            android:fillColor="#161B22"
+            android:pathData="M35,10 C45,10 55,15 60,25 C55,20 45,20 35,25 L30,20 Z" />
+
+        <!-- Body Glow Lines -->
+        <path
+            android:strokeColor="#00E5FF"
+            android:strokeWidth="0.8"
+            android:pathData="M40,8 C55,8 65,15 68,28" />
+        <path
+            android:strokeColor="#00E5FF"
+            android:strokeWidth="0.6"
+            android:pathData="M30,15 L50,15" />
+        <path
+            android:strokeColor="#00E5FF"
+            android:strokeWidth="1"
+            android:pathData="M72,30 L72,45" />
+
+        <!-- Engine/Internal Glow -->
+        <path
+            android:fillColor="#00E5FF"
+            android:pathData="M45,35 L55,35 L55,45 L45,45 Z" />
+
+        <!-- Subtle Glow at the bottom -->
+        <path
+            android:pathData="M5,58 L75,58"
+            android:strokeWidth="2">
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:startX="5"
+                    android:startY="58"
+                    android:endX="75"
+                    android:endY="58"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#0000E5FF" />
+                    <item android:offset="0.5" android:color="#8000E5FF" />
+                    <item android:offset="1.0" android:color="#0000E5FF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+</vector>
