@@ -23,17 +23,15 @@ class MainActivity : ComponentActivity() {
             BikeRentTheme {
                 val context = LocalContext.current
                 val sessionManager = remember { SessionManager(context) }
-                val userHash by sessionManager.userHash.collectAsState(initial = "")
+                val userHash by sessionManager.userHash.collectAsState(initial = "LOADING")
                 
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Loading) }
 
                 LaunchedEffect(userHash) {
-                    if (userHash == null) {
-                        currentScreen = Screen.Login
-                    } else if (userHash!!.isNotEmpty()) {
-                        currentScreen = Screen.Home
-                    } else if (userHash == "") {
-                        // Initial state, wait for collect
+                    when (userHash) {
+                        "LOADING" -> currentScreen = Screen.Loading
+                        null -> currentScreen = Screen.Login
+                        else -> currentScreen = Screen.Home
                     }
                 }
 
