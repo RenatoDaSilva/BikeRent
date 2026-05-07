@@ -36,35 +36,33 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
 
     LaunchedEffect(userHash) {
         Log.d("HomeScreen", "LaunchedEffect triggered with userHash: $userHash")
-        if (userHash == "LOADING") return@LaunchedEffect
-        
-        if (userHash.isNullOrBlank()) {
-            Log.d("HomeScreen", "userHash is null or blank, ignoring initial trigger")
+        if (userHash == "LOADING" || userHash.isNullOrBlank()) {
+            Log.d("HomeScreen", "userHash is LOADING or null/blank, skipping fetch")
             return@LaunchedEffect
         }
 
-        userHash?.let { hash ->
-            try {
-                Log.d("HomeScreen", "Calling getClientInfo with hash: $hash")
-                val response = RetrofitClient.apiService.getClientInfo(hash = hash)
-                Log.d("HomeScreen", "Response code: ${response.code()}")
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    Log.d("HomeScreen", "Response body: $body")
-                    if (body != null) {
-                        clientData = body
-                    } else {
-                        error = "Resposta do servidor vazia"
-                    }
+        val hash = userHash!!
+        try {
+            isLoading = true
+            Log.d("HomeScreen", "Calling getClientInfo with hash: $hash")
+            val response = RetrofitClient.apiService.getClientInfo(hash = hash)
+            Log.d("HomeScreen", "Response code: ${response.code()}")
+            if (response.isSuccessful) {
+                val body = response.body()
+                Log.d("HomeScreen", "Response body: $body")
+                if (body != null) {
+                    clientData = body
                 } else {
-                    error = "Erro ao carregar dados: ${response.code()}"
+                    error = "Resposta do servidor vazia"
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                error = "Falha na conexão (${e.javaClass.simpleName}): ${e.message ?: "Erro desconhecido"}"
-            } finally {
-                isLoading = false
+            } else {
+                error = "Erro ao carregar dados: ${response.code()}"
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            error = "Falha na conexão (${e.javaClass.simpleName}): ${e.message ?: "Erro desconhecido"}"
+        } finally {
+            isLoading = false
         }
     }
 
@@ -88,6 +86,8 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
                 // Main Info Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {

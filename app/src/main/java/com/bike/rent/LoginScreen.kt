@@ -68,6 +68,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                             Log.d("LoginScreen", "Response body: $loginResponse")
                             if (loginResponse?.code == 200 && loginResponse.msg == "OK") {
                                 sessionManager.saveHash(hash)
+                                // Wait for the hash to be updated in the Flow if necessary, 
+                                // but DataStore.edit is a suspend function that completes after writing.
+                                Log.d("LoginScreen", "Hash saved successfully, navigating to Home")
                                 onLoginSuccess()
                             } else if (loginResponse?.code == 401 && loginResponse.msg == "Unauthorized") {
                                 Toast.makeText(context, "CPF ou senha inválidos", Toast.LENGTH_SHORT).show()
