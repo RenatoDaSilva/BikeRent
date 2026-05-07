@@ -260,13 +260,13 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
                         Icons.Default.Lock,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
-                        tint = Color.Gray
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Seus dados estão protegidos com segurança de ponta a ponta",
                         fontSize = 11.sp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -282,7 +282,7 @@ fun InfoRow(
     iconColor: Color,
     label: String,
     value: String,
-    valueColor: Color = Color.Black,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
     valueSize: androidx.compose.ui.unit.TextUnit = 18.sp
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -296,7 +296,7 @@ fun InfoRow(
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-            Text(text = label, fontSize = 12.sp, color = Color.Gray)
+            Text(text = label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(
                 text = value,
                 fontSize = valueSize,
@@ -355,3 +355,10 @@ fun PaymentButton(
         }
     }
 }
+
+val ColorScheme.infoContainer: Color
+    get() = Color(0xFFD1E4FF)
+
+val ColorScheme.info: Color
+    get() = Color(0xFF005DB4)
+

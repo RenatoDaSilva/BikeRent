@@ -34,8 +34,8 @@ fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color(0xFF212121)
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -46,7 +46,7 @@ fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color(0xFFF8F9FA))
+                .background(MaterialTheme.colorScheme.background)
         ) {
             if (movimentos.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -64,7 +64,7 @@ fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
                     item {
                         Row(
                             modifier = Modifier
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.surface)
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -82,7 +82,7 @@ fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
                     items(movimentos) { movimento ->
                         Row(
                             modifier = Modifier
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.surface)
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -95,7 +95,7 @@ fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
                             TableCell(
                                 text = currencyFormatter.format(movimento.vlPago.toSafeDouble()),
                                 width = 100.dp,
-                                color = if (movimento.vlPago.toSafeDouble() > 0) Color(0xFF388E3C) else Color.Black,
+                                color = if (movimento.vlPago.toSafeDouble() > 0) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurface,
                                 weight = FontWeight.Bold
                             )
                         }
@@ -114,7 +114,7 @@ fun TableHeaderCell(text: String, width: androidx.compose.ui.unit.Dp) {
         modifier = Modifier.width(width),
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
-        color = Color.Gray
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 
@@ -122,7 +122,7 @@ fun TableHeaderCell(text: String, width: androidx.compose.ui.unit.Dp) {
 fun TableCell(
     text: String,
     width: androidx.compose.ui.unit.Dp,
-    color: Color = Color.Black,
+    color: Color = MaterialTheme.colorScheme.onSurface,
     weight: FontWeight = FontWeight.Normal
 ) {
     Text(
