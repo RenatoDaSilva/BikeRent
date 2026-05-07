@@ -21,7 +21,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
+fun HistoryScreen(movimentos: List<MovimentoResponse>, proximaParcela: String?, onBack: () -> Unit) {
     val currencyFormatter = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
 
     Scaffold(
@@ -80,23 +80,28 @@ fun HistoryScreen(movimentos: List<MovimentoResponse>, onBack: () -> Unit) {
                     }
 
                     items(movimentos) { movimento ->
+                        val isPaid = !movimento.dtPagamento.isNullOrBlank()
+                        val isNext = movimento.parcela == proximaParcela
+                        val rowBackground = if (isPaid) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
+                        val fontWeight = if (isNext) FontWeight.Bold else FontWeight.Normal
+
                         Row(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface)
+                                .background(rowBackground)
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            TableCell(movimento.parcela ?: "-", 50.dp)
-                            TableCell(movimento.dtPrevistaPgto.formatAsDate(), 90.dp)
-                            TableCell(movimento.dtPagamento.formatAsDate(), 90.dp)
-                            TableCell(currencyFormatter.format(movimento.vlParcela.toSafeDouble()), 100.dp)
-                            TableCell(currencyFormatter.format(movimento.multa.toSafeDouble()), 80.dp)
-                            TableCell(currencyFormatter.format(movimento.encargos.toSafeDouble()), 80.dp)
+                            TableCell(movimento.parcela ?: "-", 50.dp, weight = fontWeight)
+                            TableCell(movimento.dtPrevistaPgto.formatAsDate(), 90.dp, weight = fontWeight)
+                            TableCell(movimento.dtPagamento.formatAsDate(), 90.dp, weight = fontWeight)
+                            TableCell(currencyFormatter.format(movimento.vlParcela.toSafeDouble()), 100.dp, weight = fontWeight)
+                            TableCell(currencyFormatter.format(movimento.multa.toSafeDouble()), 80.dp, weight = fontWeight)
+                            TableCell(currencyFormatter.format(movimento.encargos.toSafeDouble()), 80.dp, weight = fontWeight)
                             TableCell(
                                 text = currencyFormatter.format(movimento.vlPago.toSafeDouble()),
                                 width = 100.dp,
                                 color = if (movimento.vlPago.toSafeDouble() > 0) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurface,
-                                weight = FontWeight.Bold
+                                weight = if (isNext) FontWeight.ExtraBold else fontWeight
                             )
                         }
                         HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFEEEEEE))

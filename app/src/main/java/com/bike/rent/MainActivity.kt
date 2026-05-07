@@ -43,11 +43,12 @@ class MainActivity : ComponentActivity() {
                         when (val screen = currentScreen) {
                             Screen.Loading -> CircularProgressIndicator()
                             Screen.Login -> LoginScreen(onLoginSuccess = { currentScreen = Screen.Home })
-                            Screen.Home -> HomeScreen(onShowHistory = { movimentos -> 
-                                currentScreen = Screen.History(movimentos) 
+                            Screen.Home -> HomeScreen(onShowHistory = { movimentos, proximaParcela -> 
+                                currentScreen = Screen.History(movimentos, proximaParcela) 
                             })
                             is Screen.History -> HistoryScreen(
                                 movimentos = screen.movimentos,
+                                proximaParcela = screen.proximaParcela,
                                 onBack = { currentScreen = Screen.Home }
                             )
                         }
@@ -62,5 +63,5 @@ sealed class Screen {
     object Loading : Screen()
     object Login : Screen()
     object Home : Screen()
-    data class History(val movimentos: List<MovimentoResponse>) : Screen()
+    data class History(val movimentos: List<MovimentoResponse>, val proximaParcela: String?) : Screen()
 }

@@ -25,7 +25,7 @@ import java.text.NumberFormat
 import java.util.*
 
 @Composable
-fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
+fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
     val userHash by sessionManager.userHash.collectAsState(initial = null)
@@ -86,8 +86,6 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
                 // Main Info Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -220,7 +218,9 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
-                        data.parcelas?.movimentos?.let { onShowHistory(it) }
+                        data.parcelas?.let { p ->
+                            onShowHistory(p.movimentos ?: emptyList(), p.proximaParcela)
+                        }
                     }
                 ) {
                     Row(
