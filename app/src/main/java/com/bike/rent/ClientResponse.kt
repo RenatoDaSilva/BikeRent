@@ -1,15 +1,32 @@
 package com.bike.rent
 
-import java.util.Date
+data class MovimentoResponse(
+    val parcela: String?,
+    val dtPrevistaPgto: String?,
+    val dtPagamento: String?,
+    val vlParcela: String?,
+    val multa: String?,
+    val encargos: String?,
+    val vlPago: String?,
+    val vlPagoAcumulado: String?
+)
 
 data class ParcelaResponse(
-    val proximaParcela: Int,
-    val total: Int,
-    val proximoVlParcela: Double,
-    val proximaDtPrevistaPgto: Date
+    val total: String?,
+    val pagas: String?,
+    val pendentes: String?,
+    val proximaParcela: String?,
+    val proximaDtPrevistaPgto: String?,
+    val proximoVlParcela: String?,
+    val movimentos: List<MovimentoResponse>?
 )
 
 data class ClientResponse(
-    val nome: String,
+    val id: String?,
+    val nome: String?,
+    val telefone: String?,
+    val email: String?,
+    val cpf: String?,
+    val loginHash: String?,
     val parcelas: ParcelaResponse?
 )

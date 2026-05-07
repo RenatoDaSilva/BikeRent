@@ -1,5 +1,6 @@
 package com.bike.rent
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,11 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onShowHistory: (List<MovimentoResponse>) -> Unit) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
     val userHash by sessionManager.userHash.collectAsState(initial = null)
@@ -35,16 +35,33 @@ fun HomeScreen() {
     var error by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(userHash) {
+        Log.d("HomeScreen", "LaunchedEffect triggered with userHash: $userHash")
+        if (userHash == "LOADING") return@LaunchedEffect
+        
+        if (userHash.isNullOrBlank()) {
+            Log.d("HomeScreen", "userHash is null or blank, ignoring initial trigger")
+            return@LaunchedEffect
+        }
+
         userHash?.let { hash ->
             try {
+                Log.d("HomeScreen", "Calling getClientInfo with hash: $hash")
                 val response = RetrofitClient.apiService.getClientInfo(hash = hash)
+                Log.d("HomeScreen", "Response code: ${response.code()}")
                 if (response.isSuccessful) {
-                    clientData = response.body()
+                    val body = response.body()
+                    Log.d("HomeScreen", "Response body: $body")
+                    if (body != null) {
+                        clientData = body
+                    } else {
+                        error = "Resposta do servidor vazia"
+                    }
                 } else {
                     error = "Erro ao carregar dados: ${response.code()}"
                 }
             } catch (e: Exception) {
-                error = "Falha na conexão: ${e.message}"
+                e.printStackTrace()
+                error = "Falha na conexão (${e.javaClass.simpleName}): ${e.message ?: "Erro desconhecido"}"
             } finally {
                 isLoading = false
             }
@@ -57,14 +74,13 @@ fun HomeScreen() {
         }
     } else if (error != null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = error!!, color = Color.Red)
+            Text(text = error!!, color = Color.Red, textAlign = TextAlign.Center, modifier = Modifier.padding(16.dp))
         }
     } else {
         clientData?.let { data ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF8F9FA))
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -72,71 +88,62 @@ fun HomeScreen() {
                 // Main Info Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         // Panel 1: Name
                         InfoRow(
                             icon = Icons.Default.Person,
-                            iconContainerColor = Color(0xFFE3F2FD),
-                            iconColor = Color(0xFF1976D2),
+                            iconContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             label = "Cliente",
-                            value = data.nome
+                            value = data.nome ?: "N/A"
                         )
                         
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), thickness = 0.5.dp, color = Color.LightGray)
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
                         // New Panel: Due Date
                         data.parcelas?.let { parcelas ->
-                            val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
                             InfoRow(
                                 icon = Icons.Default.Event,
-                                iconContainerColor = Color(0xFFFFF3E0),
-                                iconColor = Color(0xFFFF9800),
+                                iconContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                 label = "Próximo vencimento",
-                                value = dateFormatter.format(parcelas.proximaDtPrevistaPgto)
+                                value = parcelas.proximaDtPrevistaPgto.formatAsDate()
                             )
 
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), thickness = 0.5.dp, color = Color.LightGray)
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                         }
 
                         // Panel 2: Installment
                         data.parcelas?.let { parcelas ->
                             InfoRow(
                                 icon = Icons.Default.CalendarToday,
-                                iconContainerColor = Color(0xFFF3E5F5),
-                                iconColor = Color(0xFF7B1FA2),
+                                iconContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
                                 label = "Parcela",
-                                value = "${parcelas.proximaParcela} / ${parcelas.total}",
-                                valueColor = Color(0xFF1976D2)
+                                value = "${parcelas.proximaParcela ?: "0"} / ${parcelas.total ?: "0"}",
+                                valueColor = MaterialTheme.colorScheme.primary
                             )
 
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = 12.dp),
-                                thickness = 0.5.dp,
-                                color = Color.LightGray
-                            )
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
                             // Panel 3: Value
-                            val currencyFormatter =
-                                NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+                            val currencyFormatter = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
                             InfoRow(
                                 icon = Icons.Default.AttachMoney,
-                                iconContainerColor = Color(0xFFE8F5E9),
-                                iconColor = Color(0xFF388E3C),
+                                iconContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                 label = "Valor da cobrança",
-                                value = currencyFormatter.format(parcelas.proximoVlParcela),
-                                valueColor = Color(0xFF388E3C),
+                                value = currencyFormatter.format(parcelas.proximoVlParcela.toSafeDouble()),
+                                valueColor = MaterialTheme.colorScheme.primary,
                                 valueSize = 22.sp
                             )
                         } ?: run {
                             Text(
                                 text = "Sem parcelas pendentes",
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                color = Color.Gray,
-                                fontSize = 14.sp
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
@@ -147,27 +154,26 @@ fun HomeScreen() {
                 Text(
                     text = "Escolha a forma de pagamento",
                     modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color(0xFF212121)
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
 
                 // Panel 4: Buttons Pix and Card
                 PaymentButton(
-                    text = "Pagar com PIX",
+                    text = "pix",
                     subtext = "Aprovação imediata",
                     icon = Icons.Default.QrCode,
-                    containerColor = Color(0xFF4285F4),
+                    containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {}
                 )
                 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 PaymentButton(
-                    text = "Pagar com Cartão",
+                    text = "card",
                     subtext = "Crédito à vista",
                     icon = Icons.Default.CreditCard,
-                    containerColor = Color(0xFF0D47A1),
+                    containerColor = MaterialTheme.colorScheme.secondary,
                     onClick = {}
                 )
 
@@ -176,7 +182,9 @@ fun HomeScreen() {
                 // Panel 5: Informações Importantes
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD).copy(alpha = 0.5f)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.infoContainer
+                    ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
@@ -186,21 +194,20 @@ fun HomeScreen() {
                         Icon(
                             Icons.Default.Info,
                             contentDescription = null,
-                            tint = Color(0xFF1976D2),
+                            tint = MaterialTheme.colorScheme.info,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
                                 text = "Informações importantes",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = Color(0xFF1976D2)
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.info
                             )
                             Text(
                                 text = "O pagamento desta cobrança após o vencimento pode gerar juros e encargos.",
-                                fontSize = 13.sp,
-                                color = Color.Gray
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -211,10 +218,10 @@ fun HomeScreen() {
                 // Panel 6: History Button
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
                     shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-                    onClick = {}
+                    onClick = {
+                        data.parcelas?.movimentos?.let { onShowHistory(it) }
+                    }
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -223,21 +230,20 @@ fun HomeScreen() {
                         Icon(
                             Icons.Default.History,
                             contentDescription = null,
-                            tint = Color(0xFF1976D2),
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = "Ver histórico de pagamentos",
                             modifier = Modifier.weight(1.0f),
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF212121)
+                            style = MaterialTheme.typography.bodyMedium
                         )
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowForwardIos,
                             contentDescription = null,
                             modifier = Modifier.size(16.dp),
-                            tint = Color.LightGray
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                     }
                 }

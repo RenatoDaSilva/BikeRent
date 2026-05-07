@@ -18,10 +18,13 @@ class SessionManager(private val context: Context) {
 
     val userHash: Flow<String?> = context.dataStore.data
         .map { preferences ->
-            preferences[USER_HASH_KEY]
+            val hash = preferences[USER_HASH_KEY]
+            android.util.Log.d("SessionManager", "Reading hash from DataStore: $hash")
+            hash
         }
 
     suspend fun saveHash(hash: String) {
+        android.util.Log.d("SessionManager", "Saving hash to DataStore: $hash")
         context.dataStore.edit { preferences ->
             preferences[USER_HASH_KEY] = hash
         }

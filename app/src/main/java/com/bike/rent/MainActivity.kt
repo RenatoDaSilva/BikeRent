@@ -28,19 +28,28 @@ class MainActivity : ComponentActivity() {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Loading) }
 
                 LaunchedEffect(userHash) {
-                    when (userHash) {
-                        "LOADING" -> currentScreen = Screen.Loading
-                        null -> currentScreen = Screen.Login
-                        else -> currentScreen = Screen.Home
+                    android.util.Log.d("MainActivity", "LaunchedEffect userHash: $userHash")
+                    if (userHash == "LOADING") {
+                        currentScreen = Screen.Loading
+                    } else if (userHash.isNullOrBlank()) {
+                        currentScreen = Screen.Login
+                    } else {
+                        currentScreen = Screen.Home
                     }
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding).fillMaxSize(), contentAlignment = Alignment.Center) {
-                        when (currentScreen) {
+                        when (val screen = currentScreen) {
                             Screen.Loading -> CircularProgressIndicator()
                             Screen.Login -> LoginScreen(onLoginSuccess = { currentScreen = Screen.Home })
-                            Screen.Home -> HomeScreen()
+                            Screen.Home -> HomeScreen(onShowHistory = { movimentos -> 
+                                currentScreen = Screen.History(movimentos) 
+                            })
+                            is Screen.History -> HistoryScreen(
+                                movimentos = screen.movimentos,
+                                onBack = { currentScreen = Screen.Home }
+                            )
                         }
                     }
                 }
@@ -53,4 +62,5 @@ sealed class Screen {
     object Loading : Screen()
     object Login : Screen()
     object Home : Screen()
+    data class History(val movimentos: List<MovimentoResponse>) : Screen()
 }

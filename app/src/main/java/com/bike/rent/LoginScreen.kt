@@ -1,5 +1,6 @@
 package com.bike.rent
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -57,11 +58,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     try {
                         val input = cpf + senha + com.bike.rent.BuildConfig.SUGAR
                         val hash = input.md5()
+                        Log.d("LoginScreen", "Attempting login for CPF: $cpf")
                         
                         val response = RetrofitClient.apiService.login(cpf = cpf, hash = hash)
+                        Log.d("LoginScreen", "Response code: ${response.code()}")
                         
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
+                            Log.d("LoginScreen", "Response body: $loginResponse")
                             if (loginResponse?.code == 200 && loginResponse.msg == "OK") {
                                 sessionManager.saveHash(hash)
                                 onLoginSuccess()
@@ -78,7 +82,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                             }
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(context, "Falha na conexão: ${e.message}", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
+                        Toast.makeText(context, "Falha na conexão (${e.javaClass.simpleName}): ${e.message ?: "Erro desconhecido"}", Toast.LENGTH_SHORT).show()
                     } finally {
                         isLoading = false
                     }
