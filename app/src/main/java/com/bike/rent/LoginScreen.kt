@@ -1,5 +1,7 @@
 package com.bike.rent
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -100,6 +102,20 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             } else {
                 Text("Entrar")
             }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        TextButton(
+            onClick = {
+                scope.launch {
+                    sessionManager.clearSession()
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://script.google.com/macros/s/AKfycbyKSQmfrQWPU-OrCHd-IummPzZdtEm-3wN8H42uK89mVHHkTL6oyeNn5kh0VBLQchsH/exec?option=pwd"))
+                    context.startActivity(intent)
+                }
+            }
+        ) {
+            Text("Esqueci minha senha")
         }
     }
 }
