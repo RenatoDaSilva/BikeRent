@@ -1,5 +1,4 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
@@ -8,71 +7,66 @@
         android:translateX="14"
         android:translateY="24">
 
-        <!-- Bike Main Body Silhouette -->
+        <!-- Motorcycle Body (Detailed Orange) -->
         <path
-            android:fillColor="#0D1117"
-            android:pathData="M15,45 C10,45 2,35 2,25 C2,10 15,5 40,5 C65,5 78,15 78,30 C78,45 70,55 55,55 L15,55 Z" />
+            android:fillColor="#FF9800"
+            android:pathData="M78.5,35.2c-1.5-2.1-4.1-3.2-7.1-3.2H58.2l-4.5-8.5c-0.8-1.5-2.4-2.5-4.1-2.5H35.3c-1.7,0-3.3,1-4.1,2.5 L26.7,32H15c-4.4,0-8,3.6-8,8v4h6v-2h56v2h6v-4C81,38.1,80.1,36.4,78.5,35.2z" />
 
-        <!-- Rear Glowing Wheel (Large) -->
+        <!-- Tank and Seat area details -->
         <path
-            android:strokeColor="#FFFFFF"
-            android:strokeWidth="3.5"
-            android:pathData="M58,35 m-18,0 a18,18 0,1,1 36,0 a18,18 0,1,1 -36,0" />
+            android:fillColor="#FB8C00"
+            android:pathData="M48,25h-8c-1.1,0-2,0.9-2,2v2h12v-2C50,25.9,49.1,25,48,25z" />
+
+        <!-- Handlebars -->
         <path
-            android:strokeColor="#00E5FF"
+            android:fillColor="#424242"
+            android:pathData="M32,22h2v4h-2V22z M50,22h2v4h-2V22z" />
+        <path
+            android:strokeColor="#424242"
             android:strokeWidth="1.5"
-            android:pathData="M58,35 m-16,0 a16,16 0,1,1 32,0 a16,16 0,1,1 -32,0" />
+            android:pathData="M30,22h24" />
 
-        <!-- Front Glowing Wheel (Smaller) -->
+        <!-- Engine Area (Silver/Dark Gray) -->
         <path
-            android:strokeColor="#FFFFFF"
-            android:strokeWidth="2.5"
-            android:pathData="M15,40 m-12,0 a12,12 0,1,1 24,0 a12,12 0,1,1 -24,0" />
+            android:fillColor="#757575"
+            android:pathData="M30,44h24v10H30V44z" />
         <path
-            android:strokeColor="#00E5FF"
+            android:fillColor="#BDBDBD"
+            android:pathData="M32,46h20v6H32V46z" />
+
+        <!-- Rear Wheel (Black with Orange Rim detail) -->
+        <path
+            android:fillColor="#212121"
+            android:pathData="M22,58m-14,0a14,14 0,1,1 28,0a14,14 0,1,1 -28,0" />
+        <path
+            android:strokeColor="#FF9800"
             android:strokeWidth="1"
-            android:pathData="M15,40 m-10,0 a10,10 0,1,1 20,0 a10,10 0,1,1 -20,0" />
+            android:pathData="M22,58m-11,0a11,11 0,1,1 22,0a11,11 0,1,1 -22,0" />
+        <path
+            android:fillColor="#424242"
+            android:pathData="M22,58m-4,0a4,4 0,1,1 8,0a4,4 0,1,1 -8,0" />
 
-        <!-- Rider Silhouette Integrated -->
+        <!-- Front Wheel (Black with Orange Rim detail) -->
         <path
-            android:fillColor="#161B22"
-            android:pathData="M35,10 C45,10 55,15 60,25 C55,20 45,20 35,25 L30,20 Z" />
-
-        <!-- Body Glow Lines -->
+            android:fillColor="#212121"
+            android:pathData="M66,58m-14,0a14,14 0,1,1 28,0a14,14 0,1,1 -28,0" />
         <path
-            android:strokeColor="#00E5FF"
-            android:strokeWidth="0.8"
-            android:pathData="M40,8 C55,8 65,15 68,28" />
-        <path
-            android:strokeColor="#00E5FF"
-            android:strokeWidth="0.6"
-            android:pathData="M30,15 L50,15" />
-        <path
-            android:strokeColor="#00E5FF"
+            android:strokeColor="#FF9800"
             android:strokeWidth="1"
-            android:pathData="M72,30 L72,45" />
-
-        <!-- Engine/Internal Glow -->
+            android:pathData="M66,58m-11,0a11,11 0,1,1 22,0a11,11 0,1,1 -22,0" />
         <path
-            android:fillColor="#00E5FF"
-            android:pathData="M45,35 L55,35 L55,45 L45,45 Z" />
+            android:fillColor="#424242"
+            android:pathData="M66,58m-4,0a4,4 0,1,1 8,0a4,4 0,1,1 -8,0" />
 
-        <!-- Subtle Glow at the bottom -->
+        <!-- Fork -->
         <path
-            android:pathData="M5,58 L75,58"
-            android:strokeWidth="2">
-            <aapt:attr name="android:strokeColor">
-                <gradient
-                    android:startX="5"
-                    android:startY="58"
-                    android:endX="75"
-                    android:endY="58"
-                    android:type="linear">
-                    <item android:offset="0.0" android:color="#0000E5FF" />
-                    <item android:offset="0.5" android:color="#8000E5FF" />
-                    <item android:offset="1.0" android:color="#0000E5FF" />
-                </gradient>
-            </aapt:attr>
-        </path>
+            android:strokeColor="#757575"
+            android:strokeWidth="2"
+            android:pathData="M66,58 L54,32" />
+
+        <!-- Exhaust Pipe -->
+        <path
+            android:fillColor="#9E9E9E"
+            android:pathData="M15,50h20v3H15V50z" />
     </group>
 </vector>
