@@ -33,9 +33,10 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
     var clientData by remember { mutableStateOf<ClientResponse?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
+    var refreshTrigger by remember { mutableStateOf(0) }
 
-    LaunchedEffect(userHash) {
-        Log.d("HomeScreen", "LaunchedEffect triggered with userHash: $userHash")
+    LaunchedEffect(userHash, refreshTrigger) {
+        Log.d("HomeScreen", "LaunchedEffect triggered with userHash: $userHash, refreshTrigger: $refreshTrigger")
         if (userHash == "LOADING" || userHash.isNullOrBlank()) {
             Log.d("HomeScreen", "userHash is LOADING or null/blank, skipping fetch")
             return@LaunchedEffect
@@ -102,13 +103,18 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
 
                         // New Panel: Due Date
                         data.parcelas?.let { parcelas ->
-                            InfoRow(
-                                icon = Icons.Default.Event,
-                                iconContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                label = "Próximo vencimento",
-                                value = parcelas.proximaDtPrevistaPgto.formatAsDate()
-                            )
+                            Surface(
+                                onClick = { refreshTrigger++ },
+                                color = Color.Transparent
+                            ) {
+                                InfoRow(
+                                    icon = Icons.Default.Event,
+                                    iconContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    label = "Próximo vencimento",
+                                    value = parcelas.proximaDtPrevistaPgto.formatAsDate()
+                                )
+                            }
 
                             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                         }
