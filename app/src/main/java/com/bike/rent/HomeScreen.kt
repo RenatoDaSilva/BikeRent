@@ -119,8 +119,8 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
                                 icon = Icons.Default.CalendarToday,
                                 iconContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                label = "Parcela",
-                                value = "${parcelas.proximaParcela ?: "0"} / ${parcelas.total ?: "0"}",
+                                label = "Parcela no mês",
+                                value = "${parcelas.parcelaNoMes ?: "0"} / ${parcelas.parcelasNoMes ?: "0"}",
                                 valueColor = MaterialTheme.colorScheme.primary
                             )
 

@@ -18,6 +18,8 @@ data class ParcelaResponse(
     val proximaParcela: String?,
     val proximaDtPrevistaPgto: String?,
     val proximoVlParcela: String?,
+    val parcelaNoMes: String?,
+    val parcelasNoMes: String?,
     val movimentos: List<MovimentoResponse>?
 )
 
