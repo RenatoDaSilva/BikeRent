@@ -1,6 +1,9 @@
 package com.bike.rent
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -34,6 +37,7 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var refreshTrigger by remember { mutableStateOf(0) }
+    var showPixDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(userHash, refreshTrigger) {
         Log.d("HomeScreen", "LaunchedEffect triggered with userHash: $userHash, refreshTrigger: $refreshTrigger")
@@ -164,11 +168,11 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
 
                 // Panel 4: Buttons Pix and Card
                 PaymentButton(
-                    text = "pix",
+                    text = "PIX",
                     subtext = "Aprovação imediata",
                     icon = Icons.Default.QrCode,
                     containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = {}
+                    onClick = { showPixDialog = true }
                 )
                 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -178,7 +182,9 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
                     subtext = "Crédito à vista",
                     icon = Icons.Default.CreditCard,
                     containerColor = MaterialTheme.colorScheme.secondary,
-                    onClick = {}
+                    onClick = {
+                        Toast.makeText(context, "Esta opção não está disponivel no momento", Toast.LENGTH_SHORT).show()
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -274,6 +280,43 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center
+                    )
+                }
+
+                if (showPixDialog) {
+                    val pixCode = data.parcelas?.pix ?: ""
+                    AlertDialog(
+                        onDismissRequest = { showPixDialog = false },
+                        title = { Text("Pagamento via PIX") },
+                        text = {
+                            Column {
+                                Text("Copie este código PIX Copia e Cola e cole no seu aplicativo bancário")
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = pixCode,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = android.content.ClipData.newPlainText("PIX Code", pixCode)
+                                    clipboard.setPrimaryClip(clip)
+                                    Toast.makeText(context, "Código copiado!", Toast.LENGTH_SHORT).show()
+                                }
+                            ) {
+                                Text("Copiar")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showPixDialog = false }) {
+                                Text("Fechar")
+                            }
+                        }
                     )
                 }
             }
