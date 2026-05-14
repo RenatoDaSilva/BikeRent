@@ -2,7 +2,6 @@ package com.bike.rent
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -60,19 +59,15 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     try {
                         val input = cpf + senha + com.bike.rent.BuildConfig.SUGAR
                         val hash = input.md5()
-                        Log.d("LoginScreen", "Attempting login for CPF: $cpf")
                         
                         val response = RetrofitClient.apiService.login(cpf = cpf, hash = hash)
-                        Log.d("LoginScreen", "Response code: ${response.code()}")
                         
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
-                            Log.d("LoginScreen", "Response body: $loginResponse")
                             if (loginResponse?.code == 200 && loginResponse.msg == "OK") {
                                 sessionManager.saveHash(hash)
                                 // Wait for the hash to be updated in the Flow if necessary, 
                                 // but DataStore.edit is a suspend function that completes after writing.
-                                Log.d("LoginScreen", "Hash saved successfully, navigating to Home")
                                 onLoginSuccess()
                             } else if (loginResponse?.code == 401 && loginResponse.msg == "Unauthorized") {
                                 Toast.makeText(context, "CPF ou senha inválidos", Toast.LENGTH_SHORT).show()
@@ -87,7 +82,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                             }
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
                         Toast.makeText(context, "Falha na conexão (${e.javaClass.simpleName}): ${e.message ?: "Erro desconhecido"}", Toast.LENGTH_SHORT).show()
                     } finally {
                         isLoading = false

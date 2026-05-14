@@ -2,7 +2,6 @@ package com.bike.rent
 
 import android.content.ClipboardManager
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -40,21 +39,16 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
     var showPixDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(userHash, refreshTrigger) {
-        Log.d("HomeScreen", "LaunchedEffect triggered with userHash: $userHash, refreshTrigger: $refreshTrigger")
         if (userHash == "LOADING" || userHash.isNullOrBlank()) {
-            Log.d("HomeScreen", "userHash is LOADING or null/blank, skipping fetch")
             return@LaunchedEffect
         }
 
         val hash = userHash!!
         try {
             isLoading = true
-            Log.d("HomeScreen", "Calling getClientInfo with hash: $hash")
             val response = RetrofitClient.apiService.getClientInfo(hash = hash)
-            Log.d("HomeScreen", "Response code: ${response.code()}")
             if (response.isSuccessful) {
                 val body = response.body()
-                Log.d("HomeScreen", "Response body: $body")
                 if (body != null) {
                     clientData = body
                 } else {
@@ -64,7 +58,6 @@ fun HomeScreen(onShowHistory: (List<MovimentoResponse>, String?) -> Unit) {
                 error = "Erro ao carregar dados: ${response.code()}"
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             error = "Falha na conexão (${e.javaClass.simpleName}): ${e.message ?: "Erro desconhecido"}"
         } finally {
             isLoading = false

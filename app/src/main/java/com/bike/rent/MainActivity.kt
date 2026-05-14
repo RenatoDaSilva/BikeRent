@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Loading) }
 
                 LaunchedEffect(userHash) {
-                    android.util.Log.d("MainActivity", "LaunchedEffect userHash: $userHash")
                     if (userHash == "LOADING") {
                         currentScreen = Screen.Loading
                     } else if (userHash.isNullOrBlank()) {
